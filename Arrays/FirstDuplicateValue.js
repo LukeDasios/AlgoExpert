@@ -13,3 +13,5 @@ function firstDuplicateValue(array) {
 
   return -1;
 }
+
+// This solution is O(n) time and O(n) space, there is a solution that is O(n) and O(1) space. find it
