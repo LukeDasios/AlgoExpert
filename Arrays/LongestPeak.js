@@ -1,4 +1,4 @@
-// Time complexity: O(n log n)
+// Time complexity: O(n)
 // Space complexity: O(1)
 
 function longestPeak(array) {
