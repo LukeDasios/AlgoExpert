@@ -160,37 +160,90 @@ function calendarMatching(
     dailyBounds2InMinutes.push(minutes);
   }
 
-  let freeTimeSlots1 = [];
+  let boundsInMinutes = [
+    Math.max(dailyBounds1InMinutes[0], dailyBounds2InMinutes[0]),
+    Math.min(dailyBounds1InMinutes[1], dailyBounds2InMinutes[1]),
+  ];
+
+  let busyTimeSlots1 = [];
 
   for (let i = 0; i < calendar1InMinutes.length; i++) {
     let start = calendar1InMinutes[i][0];
     let end = calendar1InMinutes[i][1];
 
     while (start + meetingDuration <= end) {
-      freeTimeSlots1.push([start, start + meetingDuration]);
+      busyTimeSlots1.push([start, start + meetingDuration]);
       start += meetingDuration;
     }
   }
 
-  let freeTimeSlots2 = [];
+  let busyTimeSlots2 = [];
 
   for (let i = 0; i < calendar2InMinutes.length; i++) {
     let start = calendar2InMinutes[i][0];
     let end = calendar2InMinutes[i][1];
 
     while (start + meetingDuration <= end) {
-      freeTimeSlots2.push([start, start + meetingDuration]);
+      busyTimeSlots2.push([start, start + meetingDuration]);
       start += meetingDuration;
     }
   }
 
-  freeTimeSlots1 = mergeOverlappingIntervals(freeTimeSlots1);
-  freeTimeSlots2 = mergeOverlappingIntervals(freeTimeSlots2);
+  busyTimeSlots1 = mergeOverlappingIntervals(busyTimeSlots1);
+  busyTimeSlots2 = mergeOverlappingIntervals(busyTimeSlots2);
 
-  console.log(freeTimeSlots1);
-  console.log(freeTimeSlots2);
+  // Anything that is not busy time is free time
+  let freeTimeSlots1 = [];
 
-  // See what time slots are interlapping
+  if (boundsInMinutes[0] + meetingDuration <= busyTimeSlots1[0][0]) {
+    freeTimeSlots1.push(boundsInMinutes[0], busyTimeSlots1[0][0]);
+  }
+
+  for (let i = 1; i < busyTimeSlots1.length - 1; i++) {
+    if (busyTimeSlots1[i][0] >= busyTimeSlots1[i - 1][1] + meetingDuration) {
+      freeTimeSlots1.push(busyTimeSlots1[i - 1][1], busyTimeSlots1[i][0]);
+    }
+  }
+
+  if (
+    boundsInMinutes[1] >=
+    busyTimeSlots1[busyTimeSlots1.length - 1] + meetingDuration
+  ) {
+    freeTimeSlots1.push(
+      busyTimeSlots1[busyTimeSlots1.length - 1],
+      boundsInMinutes[1]
+    );
+  }
+
+  // Anything that is not busy time is free time
+  let freeTimeSlots2 = [];
+
+  if (boundsInMinutes[0] + meetingDuration <= busyTimeSlots2[0][0]) {
+    freeTimeSlots2.push(boundsInMinutes[0], busyTimeSlots2[0][0]);
+  }
+
+  for (let i = 1; i < busyTimeSlots2.length - 1; i++) {
+    if (busyTimeSlots2[i][0] >= busyTimeSlots2[i - 1][1] + meetingDuration) {
+      freeTimeSlots2.push(busyTimeSlots2[i - 1][1], busyTimeSlots2[i][0]);
+    }
+  }
+
+  if (
+    boundsInMinutes[1] >=
+    busyTimeSlots2[busyTimeSlots2.length - 1] + meetingDuration
+  ) {
+    freeTimeSlots2.push(
+      busyTimeSlots2[busyTimeSlots2.length - 1],
+      boundsInMinutes[1]
+    );
+  }
+
+  // console.log(boundsInMinutes);
+
+  // console.log(freeTimeSlots1);
+  // console.log(freeTimeSlots2);
+
+  // See what free time slots are overlapping
   let interlappingTimeSlots = [];
   let i = 0;
   while (i < freeTimeSlots1.length) {
