@@ -1,3 +1,7 @@
+// Time Complexity: O(c1 + c2)
+// Space Complexity: O(c1 + c2)
+// Where c# represent the # of meetings in each individuals calendar
+
 function calendarMatching(
   calendar1,
   dailyBounds1,
