@@ -1,77 +1,210 @@
 function waterfallStreams(array, source) {
+  if (array[0].length === 1) {
+    if (
+      array.some((el) => {
+        el[0] === 1;
+      })
+    ) {
+      return [0];
+    } else {
+      return [100];
+    }
+  }
   let row = 0;
   let col = source;
+  let isFirst = true;
   let directions = true;
-  array[row][col] = 100;
-  let startingPoints = [[row + 1, col]];
+  let startingPoints1 = [];
+  let startingPoints2 = [];
 
   while (row < array.length) {
     if (directions) {
-      //move downwards
-      for (let i = 0; i < startingPoints.length; i++) {
-        let point = startingPoints[i];
-        let tempRow = point[0];
-        let tempCol = point[1];
-        let last = array[tempRow - 1][tempCol] / 2;
+      if (isFirst) {
+        array[row][col] = 100;
+        let last = 100;
+        row++;
 
-        while (
-          tempRow < array.length &&
-          [0, 100].includes(array[tempRow][tempCol])
-        ) {
-          array[tempRow][tempCol] = last;
-          tempRow++;
+        while (row < array.length && array[row][col] === 0) {
+          array[row][col] = 100;
+          row++;
         }
 
-        if (tempRow === array.length) {
-          // reached the bottom
-          // return the last row
-          return array[tempRow];
-        } else if (array[tempRow][tempCol] === 1) {
-          // reached a deadend
-          startingPoints.push([tempRow, tempCol]);
+        if (row === array.length) {
+          return array[array.length - 1];
+        } else {
+          startingPoints2.push([row - 1, col]);
         }
 
-        row = 1000;
+        isFirst = false;
+      } else {
+        for (let i = 0; i < startingPoints1.length; i++) {
+          let point = startingPoints1[i];
+          let tempRow = point[0];
+          let tempCol = point[1];
+          let last = point[2];
+
+          while (tempRow < array.length && array[tempRow][tempCol] === 0) {
+            array[tempRow][tempCol] += last;
+            tempRow++;
+          }
+
+          if (tempRow === array.length) {
+            row = array.length;
+          } else {
+            startingPoints2.push([tempRow - 1, tempCol]);
+          }
+        }
+        startingPoints1 = [];
       }
-
-      startingPoints.push([row, col]);
     } else {
-      // Move left and right (if possible)
-      for (let i = 0; i < startingPoints.length; i++) {
-        let point = startingPoints[i];
+      for (let i = 0; i < startingPoints2.length; i++) {
+        let point = startingPoints2[i];
         let tempRow = point[0];
         let tempCol = point[1] - 1;
-        let last = startingPoints[tempRow][tempCol] / 2;
+        let last = array[tempRow][point[1]] / 2;
 
-        // Move left from the point
-        while (tempCol > -1 && array[tempRow + 1][tempCol] === 1) {
-          array[tempRow][tempCol] = last;
+        while (
+          tempCol > -1 &&
+          array[tempRow][tempCol] !== 1 &&
+          array[tempRow + 1][tempCol] === 1
+        ) {
+          array[tempRow][tempCol] += last;
           tempCol--;
         }
 
-        if (array[tempRow + 1][tempCol] === 0) {
-          // can fall down
-          startingPoints.push([tempRow][tempCol]);
-        } else if (tempCol === 0) {
-          // Reached the left wall without being able to fall down
+        if (
+          array[tempRow + 1][tempCol] === 0 &&
+          array[tempRow][tempCol + 1] !== 1
+        ) {
+          startingPoints1.push([tempRow, tempCol, last]);
         }
 
-        // Move right from the point
         tempCol = point[1] + 1;
-        while (tempCol < array.length && array[tempRow + 1][tempCol] === 1) {
-          array[tempRow][col] = last;
+        while (
+          tempCol < array.length &&
+          array[tempRow][tempCol] !== 1 &&
+          array[tempRow + 1][tempCol] === 1
+        ) {
+          array[tempRow][tempCol] += last;
+          tempCol++;
         }
 
-        if (array[tempRow + 1][tempCol] === 0) {
-          // can fall down
-          startingPoints.push([tempRow][tempCol]);
-        } else if (tempCol === array.length) {
-          // Reached the right wall without being able to fall down
+        if (
+          array[tempRow + 1][tempCol] === 0 &&
+          array[tempRow][tempCol--] !== 1
+        ) {
+          startingPoints1.push([tempRow, tempCol, last]);
         }
       }
+
+      startingPoints2 = [];
     }
     directions = !directions;
   }
 
   return array[array.length - 1];
 }
+
+let result = waterfallStreams(
+  [
+    [0, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 0],
+  ],
+  3
+);
+
+console.log(result);
+
+// Passed the first test
+// function waterfallStreams(array, source) {
+//   let row = 0;
+//   let col = source
+//   let isFirst = true
+//   let directions = true
+//   let startingPoints1 = []
+//   let startingPoints2 = []
+
+//   while (row < array.length) {
+//     if (directions) { //move downwards
+//       if (isFirst) {
+//         array[row][col] = 100
+//         let last = 100
+//         row++
+
+//         while (row < array.length && array[row][col] === 0) {
+//           array[row][col] = 100
+//           row++
+//         }
+
+//         if (row === array.length) { // reached the bottom
+//           row = tempRow
+//         } else {
+//           startingPoints2.push([row-1, col])
+//         }
+
+//         isFirst = false
+//       } else {
+//         for (let i = 0; i < startingPoints1.length; i++) {
+//           let point = startingPoints1[i]
+//           let tempRow = point[0]
+//           let tempCol = point[1]
+//           let last = point[2]
+
+//           while (tempRow < array.length && array[tempRow][tempCol] === 0) {
+//             array[tempRow][tempCol] = last
+//             tempRow++
+//           }
+
+//           if (tempRow === array.length) {
+//             row = tempRow
+//           } else {
+//             startingPoints2.push([tempRow-1, tempCol])
+//           }
+//         }
+//         startingPoints1 = []
+//       }
+//     } else {
+//       for (let i = 0; i < startingPoints2.length; i++) {
+//         let point = startingPoints2[i]
+//         let tempRow = point[0]
+//         let tempCol = point[1] - 1
+//         let last = array[tempRow][point[1]] / 2
+
+//         while (tempCol > -1 && array[tempRow+1][tempCol] === 1) {
+//           array[tempRow][tempCol] = last
+//           tempCol--
+//         }
+
+//         if (array[tempRow+1][tempCol] === 0) {
+//             // array[tempRow][tempCol] = last
+//             startingPoints1.push([tempRow, tempCol, last])
+//         } else if (tempCol === 0) {
+
+//         }
+
+//         tempCol = point[1] + 1
+//         while (tempCol < array.length && array[tempRow+1][tempCol] === 1) {
+//           array[tempRow][tempCol] = last
+//           tempCol++
+//         }
+
+//         if (array[tempRow+1][tempCol] === 0) { // can fall down
+//             // array[tempRow][tempCol] = last
+//             startingPoints1.push([tempRow, tempCol, last])
+//         } else if (tempCol === array.length) { // Reached the right wall without being able to fall down
+
+//         }
+//       }
+
+//       startingPoints2 = []
+//     }
+//     directions = !directions
+//   }
+
+//   return array[array.length - 1]
+// }
