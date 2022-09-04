@@ -37,9 +37,11 @@ function waterfallStreams(array, source) {
 
         isFirst = false;
       } else {
+        let bottom = 0
+
         for (let i = 0; i < startingPoints1.length; i++) {
           let point = startingPoints1[i];
-          let tempRow = point[0];
+          let tempRow = point[0] + 1;
           let tempCol = point[1];
           let last = point[2];
 
@@ -49,11 +51,13 @@ function waterfallStreams(array, source) {
           }
 
           if (tempRow === array.length) {
-            row = array.length;
+            bottom++
           } else {
+            if (tempRow)
             startingPoints2.push([tempRow - 1, tempCol]);
           }
         }
+        if (bottom === startingPoints1.length) return array[array.length-1]
         startingPoints1 = [];
       }
     } else {
@@ -73,9 +77,12 @@ function waterfallStreams(array, source) {
         }
 
         if (
+          tempRow + 1 < array.length &&
           array[tempRow + 1][tempCol] === 0 &&
+          array[tempRow][tempCol] !== 1 &&
           array[tempRow][tempCol + 1] !== 1
         ) {
+          array[tempRow][tempCol] += last;
           startingPoints1.push([tempRow, tempCol, last]);
         }
 
@@ -90,9 +97,12 @@ function waterfallStreams(array, source) {
         }
 
         if (
+          tempRow + 1 < array.length &&
           array[tempRow + 1][tempCol] === 0 &&
-          array[tempRow][tempCol--] !== 1
+          array[tempRow][tempCol] !== 1 &&
+          array[tempRow][tempCol - 1] !== 1
         ) {
+          array[tempRow][tempCol] += last;
           startingPoints1.push([tempRow, tempCol, last]);
         }
       }
@@ -113,7 +123,7 @@ let result = waterfallStreams(
     [0, 0, 0, 0, 0, 0, 0],
     [1, 1, 1, 0, 0, 1, 0],
     [0, 0, 0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0]
   ],
   3
 );
