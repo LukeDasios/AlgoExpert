@@ -1,16 +1,27 @@
 function minimumAreaRectangle(points) {
-  let hashMap = new Map();
+  const pointsSet = new Set()
+  let minArea = Infinity
 
-  for (let i = 0; i < points.length; i++) {
-    let x = points[0];
-    let y = points[1];
+  for (const point of points) {
+    pointsSet.add(point.toString())
+  }
 
-    if (hasMap.has(x)) {
-      hashMap.set(x, hashMap.get(x).push(y));
-    } else {
-      hashMap.set(x, [y]);
+  for (const p1 of points) {
+    for (const p2 of points) {
+      if (p1[0] !== p2[0] && p1[1] !== p2[1]) {
+        minArea = Math.min(minArea, getArea(p1, p2))
+      }
     }
   }
 
-  return 0;
+  function getArea(p1, p2) {
+    const p3 = [p1[0], p2[1]]
+    const p4 = [p2[0], p1[1]]
+
+    if (pointsSet.has(p3.toString()) && pointsSet.has(p4.toString())) {
+      return Math.abs(p1[0] - p2[0]) * Math.abs(p1[1] - p2[1])
+    } else return Infinity
+  }
+
+  return minArea === Infinity ? 0 : minArea
 }
