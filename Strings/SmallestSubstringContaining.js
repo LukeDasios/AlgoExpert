@@ -1,4 +1,5 @@
-// Time Complexity: O(n + m) - where n is the length of bigString and m is the length of smallString
+// Naive Solution
+// Time Complexity: O(n^2) - where n is the length of bigString and m is the length of smallString
 // Space Complexity: O(n + m)
 
 function smallestSubstringContaining(bigString, smallString) {
@@ -39,5 +40,11 @@ function smallestSubstringContaining(bigString, smallString) {
 
   return smallest_substring;
 }
+
+// Optimal Solution
+// Time Complexity: O(n + m) - where n is the length of bigString and m is the length of smallString
+// Space Complexity: O(n + m)
+
+// Uses the sliding window technique
 
 console.log(smallestSubstringContaining("abcd$ef$axb$c$", "$$abf"));
