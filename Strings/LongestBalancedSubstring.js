@@ -1,4 +1,4 @@
-// Time Complexity: O(n)
+// Time Complexity: O(n) - where n is the length of the input string
 // Space Complexity: O(1)
 
 function longestBalancedSubstring(string) {
