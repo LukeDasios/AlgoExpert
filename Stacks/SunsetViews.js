@@ -1,3 +1,6 @@
+// Time Complexity: O(n) - where n is the length of the buildings array
+// Space Complexity: O(n)
+
 function sunsetViews(buildings, direction) {
   if (buildings.length === 0) return [];
   let arr = [];
