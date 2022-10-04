@@ -1,3 +1,6 @@
+// Time Complexity: O(n^2)
+// Space Complextiy: O(1)
+
 function bubbleSort(array) {
   let iterations = 1;
   while (sort(array, iterations++)) sort(array, iterations++);
