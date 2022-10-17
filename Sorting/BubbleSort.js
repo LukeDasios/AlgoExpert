@@ -1,4 +1,4 @@
-// Time Complexity: O(n^2)
+// Time Complexity: O(n^2) - where n is the length of the input array
 // Space Complextiy: O(1)
 
 function bubbleSort(array) {
